@@ -1,2 +1,4 @@
 # Ignore node_modules directory
 src/node_modules
+Dockerfile
+build_push_image.sh
