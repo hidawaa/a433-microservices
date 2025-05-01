@@ -1,0 +1,35 @@
+version: 2.1
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:18.20
+    working_directory: ~/app
+
+jobs:
+  lint-dockerfile:
+    docker:
+      - image: hadolint/hadolint
+    steps:
+      - checkout
+      - run: hadolint Dockerfile
+
+  build-app-karsajobs-ui:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          echo $TOKEN | docker login ghcr.io -u hidawaa --password-stdin
+          docker build -t ghcr.io/hidawaa/karsajobs-ui:latest .
+          docker push ghcr.io/hidawaa/karsajobs-ui:latest
+
+workflows:
+  version: 2
+  karsajobs-ui-pipeline:
+    jobs:
+      - lint-dockerfile
+      - build-app-karsajobs-ui:
+          requires:
+            - lint-dockerfile
