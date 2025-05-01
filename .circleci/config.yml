@@ -28,7 +28,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-          echo $TOKEN | docker login ghcr.io -u $hidawaa --password-stdin
+          echo $TOKEN | docker login ghcr.io -u hidawaa --password-stdin
           docker build -t ghcr.io/hidawaa/karsajobs:latest .
           docker push ghcr.io/hidawaa/karsajobs:latest
 
