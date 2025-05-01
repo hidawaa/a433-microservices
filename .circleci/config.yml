@@ -9,7 +9,7 @@ executors:
 jobs:
   lint-dockerfile:
     docker:
-      - image: hadolint/hadolint
+      - image: hadolint/hadolint:latest-alpine
     steps:
       - checkout
       - run: hadolint Dockerfile
