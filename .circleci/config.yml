@@ -9,10 +9,15 @@ executors:
 jobs:
   lint-dockerfile:
     docker:
-      - image: hadolint/hadolint
+      - image: alpine:latest
     steps:
       - checkout
-      - run: hadolint Dockerfile
+      - run:
+          name: Install Hadolint
+          command: apk add --no-cache hadolint
+      - run:
+          name: Run Hadolint
+          command: hadolint Dockerfile
 
   test-app:
     executor: docker-executor
