@@ -1,0 +1,44 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: cimg/go:1.21
+    working_directory: ~/app
+
+jobs:
+  lint-dockerfile:
+    docker:
+      - image: hadolint/hadolint
+    steps:
+      - checkout
+      - run: hadolint Dockerfile
+
+  test-app:
+    executor: docker-executor
+    steps:
+      - checkout
+      - run: go mod tidy
+      - run: go test -v -short --count=1 $(go list ./...)
+
+  build-app-karsajobs:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          echo $TOKEN | docker login ghcr.io -u $hidawaa --password-stdin
+          docker build -t ghcr.io/hidawaa/karsajobs:latest .
+          docker push ghcr.io/hidawaa/karsajobs:latest
+
+workflows:
+  version: 2
+  karsajobs-pipeline:
+    jobs:
+      - lint-dockerfile
+      - test-app
+      - build-app-karsajobs:
+          requires:
+            - lint-dockerfile
+            - test-app
