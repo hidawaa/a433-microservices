@@ -1,5 +1,5 @@
 # Menggunakan base image alpine
-FROM node:18-alpine
+FROM node:14-alpine
 
 # Direktori aktif
 WORKDIR /src
